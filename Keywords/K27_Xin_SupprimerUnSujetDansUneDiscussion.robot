@@ -36,11 +36,14 @@ Supprimer un sujet dans une discussion
     Click Element    ${option_MesSites}
     # select un site content le sujet a Supprimer
     Click Element    ${select_site_part1}${vNomDeSite}${select_site_part2}
-    # valide si element 'Discussions' sur header, si non click icon 'Plus'
-    ${element_found} =    Run Keyword And Return Status     Element Should Be Visible    ${discussions_afficher_sur_header}
+
+    # valide element 'Discussions' exist
+    # ${found_sur_header} pour valider element 'Discussions' dans header ou pas
+    # ${found_plus_icon} pou valider button 'Plus' exist ou pas
+    ${found_sur_header} =    Run Keyword And Return Status    Element Should Be Visible    ${discussions_afficher_sur_header}
     ${found_plus_icon} =    Run Keyword And Return Status    Element Should Be Visible    ${icon_Plus}
-    IF    not ${element_found}
-    # valide si il n'y pas icon 'Plus' icon 'Modifier' et drag and drop 'Discussions' img
+    IF    not ${found_sur_header}
+        # valide si il n'y pas icon 'Plus' icon 'Modifier' et drag and drop 'Discussions' img
         IF    not ${found_plus_icon}
             Click Element    ${icon_modifier}
             Click Element    ${lien_Personnaliser_le_site}
@@ -49,7 +52,7 @@ Supprimer un sujet dans une discussion
             Sleep    3s
         ELSE
             Click Element    ${icon_Plus}
-    # valide si element 'Discussions' dans list 'Plus'    si non click icon 'Modifier' et drag and drop 'Discussions' img
+            # valide si element 'Discussions' dans list 'Plus'    si non click icon 'Modifier' et drag and drop 'Discussions' img
             ${discussion_link_found} =    Run Keyword And Return Status    Element Should Be Visible    ${lien_Discussions}
             IF    not ${discussion_link_found}
                 Click Element    ${icon_modifier}
@@ -57,15 +60,21 @@ Supprimer un sujet dans une discussion
                 Drag And Drop    ${img_dispo_drag}    ${img_dispo_drop_place}
                 Click Element    ${btn_OK_dragDrop}
                 Sleep    3s
-                # valide si element 'Discussions' sur header, si non click icon 'Plus'
-                IF    not ${element_found}    Click Element    ${icon_Plus}
             END
         END
-    END  
+    END
 
-    # select option 'Discussions'
-    Wait Until Element Is Visible     ${lien_Discussions}
-    Click Element    ${lien_Discussions}
+    # valide si element 'Discussions' sur header, si non click icon 'Plus'
+    ${found_sur_header} =    Run Keyword And Return Status    Element Should Be Visible    ${discussions_afficher_sur_header}
+    IF    not ${found_sur_header}
+        Click Element    ${icon_Plus}
+        # select option lien 'Discussions'
+        Wait Until Element Is Visible    ${lien_Discussions}
+        Click Element    ${lien_Discussions}
+    ELSE
+        # click 'Discussions' sur header
+        Click Element    ${discussions_afficher_sur_header}
+    END
     # click 'Tout' pour afficher tout les sujets
     Click Element    ${lien_Tout_sujets}  
     sleep    3s  
