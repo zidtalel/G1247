@@ -37,21 +37,29 @@ Supprimer un sujet dans une discussion
     # select un site content le sujet a Supprimer
     Click Element    ${select_site_part1}${vNomDeSite}${select_site_part2}
     # valide si element 'Discussions' sur header, si non click icon 'Plus'
-    ${element_found} =    Run Keyword And Return Status    Element Should Be Visible    ${discussions_afficher_sur_header}
+    ${element_found} =    Run Keyword And Return Status     Element Should Be Visible    ${discussions_afficher_sur_header}
+    ${found_plus_icon} =    Run Keyword And Return Status    Element Should Be Visible    ${icon_Plus}
     IF    not ${element_found}
-    Click Element    ${icon_Plus} 
-        # valide si element 'Discussions' dans list 'Plus'  si non click icon 'Modifier' et drag and drop 'Discussions' img
-        ${discussion_link_found} =    Run Keyword And Return Status    Element Should Be Visible    ${lien_Discussions}
-        IF    not ${discussion_link_found}
-        Click Element    ${icon_modifier}    
-        Click Element    ${lien_Personnaliser_le_site}   
-        Drag And Drop    ${img_dispo_drag}    ${img_dispo_drop_place}
-        Click Element    ${btn_OK_dragDrop}
-        Sleep    3s
-        # valide si element 'Discussions' sur header, si non click icon 'Plus'
-        IF    not ${element_found}    
-        Click Element    ${icon_Plus}       
-        END    
+    # valide si il n'y pas icon 'Plus' icon 'Modifier' et drag and drop 'Discussions' img
+        IF    not ${found_plus_icon}
+            Click Element    ${icon_modifier}
+            Click Element    ${lien_Personnaliser_le_site}
+            Drag And Drop    ${img_dispo_drag}    ${img_dispo_drop_place}
+            Click Element    ${btn_OK_dragDrop}
+            Sleep    3s
+        ELSE
+            Click Element    ${icon_Plus}
+    # valide si element 'Discussions' dans list 'Plus'    si non click icon 'Modifier' et drag and drop 'Discussions' img
+            ${discussion_link_found} =    Run Keyword And Return Status    Element Should Be Visible    ${lien_Discussions}
+            IF    not ${discussion_link_found}
+                Click Element    ${icon_modifier}
+                Click Element    ${lien_Personnaliser_le_site}
+                Drag And Drop    ${img_dispo_drag}    ${img_dispo_drop_place}
+                Click Element    ${btn_OK_dragDrop}
+                Sleep    3s
+                # valide si element 'Discussions' sur header, si non click icon 'Plus'
+                IF    not ${element_found}    Click Element    ${icon_Plus}
+            END
         END
     END  
 
