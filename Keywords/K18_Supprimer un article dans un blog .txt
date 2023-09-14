@@ -1,0 +1,35 @@
+K18 Karima : Supprimer un article dans un blog (dans un site déjà créé)
+#---Les localisateurs
+Link_sites = "xpath=//span[text()='Sites']"
+link_Mes_Sites="xpath=//a[text()='Mes sites']"
+link_Nom_Site ="xpath=//a[text()='Groupe1247']"
+btn_plus = "xpath=//span[@id='HEADER_SITE_MORE_PAGES_text']"
+btn_blog="xpath=//a[text()='Blog']"
+btn_Supprimer1="xpath=//a[text()='"
+btn_Supprimer2="']/ancestor::td/div/div/div/div[@class='onDeleteBlogPost']/a/span[text()='Supprimer']"
+btn_Cofirmer_supp ="xpath=//span[@class='first-child']/button[text()='Supprimer']"
+
+
+
+Supprimer un article dans un blog (dans un site déjà créé)
+	#Nom_Site contient le nom du site
+	#Nom_article contient le nom  article 
+	
+    [Arguments]     ${Nom_Site}    ${Nom_article}        
+   Go To    ${vURL}/site/${Nom_Site}/dashboard 
+# Cliquer sur button plus
+    Wait Until Element Is Visible    ${btn_plus}
+    Click Element    ${btn_plus}
+    #Sleep    2
+# Cliquer sur button blog
+    Wait Until Element Is Visible     ${btn_blog}
+    Click Element    ${btn_blog}
+
+# Cliquer sur button supprimer 
+    Wait Until Element Is Visible    ${btn_Supprimer1}${Nom_article}${btn_Supprimer2}       
+    Click Element    ${btn_Supprimer1}${Nom_article}${btn_Supprimer2}   
+
+# Cliquer sur button confirmer
+    Wait Until Element Is Visible     ${btn_Cofirmer_supp}
+    Click Button   ${btn_Cofirmer_supp}
+    
