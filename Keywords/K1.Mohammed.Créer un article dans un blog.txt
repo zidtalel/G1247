@@ -1,0 +1,175 @@
+######################################################Fichier Locators############################################
+
+#NB : Veuillez noter que les localisateurs sont basés sur la version anglaise. Ainsi, si vous rencontrez des problèmes, n'hésitez pas à ajuster les textes.
+
+ 
+
+ 
+#Site Page Elements
+btn_Onglet_Sites ="id=HEADER_SITES_MENU_text"
+btn_MySites = "link=My Sites"
+btn_site1="//a[normalize-space()='"
+btn_site2="']"
+
+#Blog page Elements
+btn_More="id=HEADER_SITE_MORE_PAGES_text"
+btn_Blog="link=Blog"
+btn_NewPost="id=template_x002e_toolbar_x002e_blog-postlist_x0023_default-create-button-button"
+
+#Blog page forme
+txt_Title="id=template_x002e_postedit_x002e_blog-postedit_x0023_default-title"  
+
+txt_Content_iframe="id=template_x002e_postedit_x002e_blog-postedit_x0023_default-content_ifr"
+btn_Publish="template_x002e_postedit_x002e_blog-postedit_x0023_default-publish-button-button"
+btn_add="id=template_x002e_postedit_x002e_blog-postedit_x0023_default-add-tag-button-button"
+tag_texte_box="id=template_x002e_postedit_x002e_blog-postedit_x0023_default-tag-input-field"
+
+
+
+# Login Page Elements
+txt_UserName = "name=username"
+txt_Password = "name=password"
+btn_Login = "xpath=//button[contains(text(), 'Sign In')]"
+
+
+# Dashboard Page Elements
+lbl_Title = "xpath=//h1[@id='HEADER_TITLE']/span"
+link_HeaderUserMenu = "xpath=//span[@id='HEADER_USER_MENU_POPUP_text']"
+link_HeaderDeconnexion = "id=HEADER_USER_MENU_LOGOUT_text"
+
+# Dashbord Config page elements
+img_RoueDentee = "id=HEADER_TITLE_MENU"
+btn_ChangerDisposition = "id=template_x002e_customise-layout_x002e_customise-user-dashboard_x0023_default-change-button-button"
+btn_Mode = "id=template_x002e_customise-layout_x002e_customise-user-dashboard_x0023_default-select-button-dashboard"
+btn_ChangerDisposition_OK = "id=template_x002e_customise-dashlets_x002e_customise-user-dashboard_x0023_default-save-button-button"
+
+
+######################################################Fichier Keywords ############################################
+
+# Définition des paramètres nécessaires pour exécuter les cas de test
+*** Settings ***
+# Utilisation de la bibliothèque Selenium pour automatiser les actions dans le navigateur
+Library           SeleniumLibrary
+# Chargement des localisateurs à partir d'un fichier externe
+Variables         ../Locators/Locators.py
+
+# Définition des variables utilisées dans les cas de test
+*** Variables ***
+# Délai maximum pour attendre un élément ou une condition
+${TIMEOUT}        5s
+# Variable pour l'URL du site web à tester
+${vURL}
+
+# Définition des mots-clés ou fonctions personnalisées
+*** Keywords ***
+# Mot-clé pour se connecter à une application ou un site web
+Login
+    # Arguments nécessaires pour se connecter
+    [Arguments]    ${vURL}    ${vBrowser}    ${vUsername}    ${vPassword}
+    # Configurer le délai d'attente de Selenium
+    Set Selenium Timeout    ${TIMEOUT}
+    # Lancer le navigateur avec l'URL et le type de navigateur donnés
+    Open Browser    ${vURL}    ${vBrowser}
+    # Maximiser la fenêtre du navigateur pour une meilleure visibilité
+    Maximize Browser Window
+    # Remplir le champ de nom d'utilisateur
+    Input text    ${txt_UserName}    ${vUsername}
+    # Remplir le champ de mot de passe
+    Input text    ${txt_Password}    ${vPassword}
+    # Appuyer sur le bouton de connexion
+    Click Button    ${btn_Login}
+
+# Mot-clé pour se déconnecter d'une application ou d'un site web
+Logout
+    sleep    3s
+    Wait Until Element Is Visible    ${link_HeaderUserMenu}
+    Click Element    ${link_HeaderUserMenu}
+    Wait Until Element Is Visible    ${link_HeaderDeconnexion}
+    Click Element    ${link_HeaderDeconnexion}
+    [Teardown]    Close Browser
+
+    
+# Mot-clé pour créer un article sur un site/blog
+Creer_article
+    # Arguments pour le titre et le contenu de l'article
+    [Arguments]    ${vBlog_title}    ${vBlog_content}    ${Site_Name}    ${tag}    
+
+    # Attendre que l'onglet "Sites" soit visible et ensuite cliquer dessus
+    Wait Until Element Is Visible    ${btn_Onglet_Sites}    ${TIMEOUT}
+    Click Element    ${btn_Onglet_Sites}
+
+    # Attendre que le bouton "My Sites" soit visible et ensuite cliquer dessus
+    Wait Until Element Is Visible    ${btn_MySites}    ${TIMEOUT}
+    Click Element    ${btn_MySites}
+
+    # Attendre que le bouton du site soit visible et ensuite cliquer dessus
+    Wait Until Element Is Visible    ${btn_site1}${Site_Name}${btn_site2}    ${TIMEOUT}
+    Click Element    ${btn_site1}${Site_Name}${btn_site2}
+  # Attendre que l'option "More" soit visible et ensuite cliquer dessus
+    Wait Until Element Is Visible    ${btn_More}    ${TIMEOUT}
+    Click Element    ${btn_More}
+    # Attendre que l'option "Blog" soit visible et ensuite cliquer dessus
+    Wait Until Element Is Visible    ${btn_Blog}    ${TIMEOUT}
+    # Gestion des erreurs possibles lors de l'accès à "Blog"
+    Run Keyword And Ignore Error    Click Element    ${btn_Blog}
+
+    # Attendre que le bouton "New Post" soit visible et ensuite cliquer dessus pour créer un nouvel article
+    Wait Until Element Is Visible    ${btn_NewPost}    ${TIMEOUT}
+    Click Element    ${btn_NewPost}
+
+    # Attendre que le champ du titre soit visible et ensuite entrer le titre de l'article
+    Wait Until Element Is Visible    ${txt_Title}    ${TIMEOUT}
+    Input Text    ${txt_Title}    ${vBlog_title}
+    Execute Javascript    tinyMCE.activeEditor.setContent("${vBlog_content}");
+    #ajouter un Tag
+    Input Text    ${tag_texte_box}    ${tag}
+    Click Element    ${btn_add}
+
+    # Cliquer sur le bouton "Publish" pour publier l'article
+    Click Element    ${btn_Publish}
+
+
+########################################################Fichier Script################################################
+
+
+# Créer un article dans un blog (dans un site déjà créé)
+
+# Paramètres généraux pour le cas de test
+*** Settings ***
+# Documentation pour ce fichier script, spécifiant le module associé
+Documentation    Fichiers de scripts pour le module RQ3 : Sites
+# Inclusion de la bibliothèque Selenium pour l'automatisation du navigateur web
+Library           SeleniumLibrary
+# Inclusion de la bibliothèque Telnet pour la communication sur le réseau (si nécessaire pour ce test)
+Library           Telnet
+# Inclusion d'autres mots-clés à partir d'un fichier externe
+Resource          ../Ressources/Keywords/keywords.robot
+# Chargement des localisateurs (comme les sélecteurs CSS ou XPath) à partir d'un fichier externe
+Variables         ../Ressources/Locators/Locators.py
+
+# Déclaration des variables utilisées dans le cas de test
+*** Variables ***
+# URL de l'application ou du site web à tester
+${vURL}           http://localhost:8088/share/page/
+# Type de navigateur à utiliser (ff signifie Firefox)
+${vBrowser}       chrome
+# Informations d'identification pour se connecter à l'application
+${vUsername}      6213133
+${vPassword}      123456
+#Nom du groupe sur lequele on test la fonctionnalité
+${Site_Name}    Groupe1247
+
+# Informations pour l'article à créer
+${vBlog_title}    Blog_test
+${vBlog_content}  Article test 4
+${tag}    testTag
+# Définition des cas de test
+*** Test Cases ***
+# Cas de test principal
+Test
+    # Se connecter à l'application en utilisant les informations d'identification fournies
+    Login          ${vURL}    ${vBrowser}    ${vUsername}    ${vPassword}
+    # Créer un article avec le titre et le contenu fournis
+    Creer_article  ${vBlog_title}    ${vBlog_content}    ${Site_Name}    ${tag}   
+    # Se déconnecter de l'application après avoir effectué les actions
+    Logout

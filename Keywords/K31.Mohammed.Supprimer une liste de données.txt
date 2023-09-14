@@ -1,0 +1,169 @@
+
+
+######################################################Fichier Locators############################################
+
+#NB : Veuillez noter que les localisateurs sont basés sur la version anglaise. Ainsi, si vous rencontrez des problèmes, n'hésitez pas à ajuster les textes.
+
+
+# Login Page Elements
+txt_UserName = "name=username"
+txt_Password = "name=password"
+btn_Login = "id=page_x002e_components_x002e_slingshot-login_x0023_default-submit-button"
+ 
+#Site Page Elements
+btn_Onglet_Sites ="id=HEADER_SITES_MENU_text"
+btn_MySites = "link=My Sites"
+btn_site1="//a[normalize-space()='"
+btn_site2="']"
+btn_More="id=HEADER_SITE_MORE_PAGES_text"
+
+
+btn_DataList="link=Data Lists"
+
+btn_A_supprimer1="xpath=//a[contains(text(),'"
+btn_A_supprimer2="')]"
+
+btn_delete1="xpath=//a[contains(text(),'"
+btn_delete2="')]/span[@class='delete']"
+
+
+btn_confirm_delete="xpath=//span[@class='button-group']//button[contains(text(),'Delete')]"
+
+# Dashboard Page Elements
+lbl_Title = "xpath=//h1[@id='HEADER_TITLE']/span"
+link_HeaderUserMenu = "id=HEADER_USER_MENU_POPUP_text"
+link_HeaderDeconnexion = "id=HEADER_USER_MENU_LOGOUT_text"
+
+######################################################Fichier Keywords ############################################
+# Définition des paramètres nécessaires pour exécuter les cas de test
+*** Settings ***
+# Utilisation de la bibliothèque Selenium pour automatiser les actions dans le navigateur
+Library           SeleniumLibrary
+# Chargement des localisateurs à partir d'un fichier externe
+Variables         ../Locators/Locators.py
+
+# Définition des variables utilisées dans les cas de test
+*** Variables ***
+# Délai maximum pour attendre un élément ou une condition
+${TIMEOUT}        5s
+# Variable pour l'URL du site web à tester
+${vURL}
+
+# Définition des mots-clés ou fonctions personnalisées
+*** Keywords ***
+# Mot-clé pour se connecter à une application ou un site web
+Login
+    # Arguments nécessaires pour se connecter
+    [Arguments]    ${vURL}    ${vBrowser}    ${vUsername}    ${vPassword}
+    # Configurer le délai d'attente de Selenium
+    Set Selenium Timeout    ${TIMEOUT}
+    # Lancer le navigateur avec l'URL et le type de navigateur donnés
+    Open Browser    ${vURL}    ${vBrowser}
+    # Maximiser la fenêtre du navigateur pour une meilleure visibilité
+    Maximize Browser Window
+    # Remplir le champ de nom d'utilisateur
+    Input text    ${txt_UserName}    ${vUsername}
+    # Remplir le champ de mot de passe
+    Input text    ${txt_Password}    ${vPassword}
+    # Appuyer sur le bouton de connexion
+    Click Button    ${btn_Login}
+
+# Mot-clé pour se déconnecter d'une application ou d'un site web
+Logout
+    # Attendre quelques secondes avant de déclencher la déconnexion
+    sleep    3s
+    # Ouvrir le menu utilisateur
+    Click Element    ${link_HeaderUserMenu}
+    # Attendre que le lien de déconnexion apparaisse
+    Wait Until Element Is Visible    ${link_HeaderDeconnexion}
+    # Appuyer sur le lien de déconnexion
+    Click Element    ${link_HeaderDeconnexion}
+    # Fermer le navigateur après la déconnexion
+    [Teardown]    Close Browser
+
+# Mot-clé pour supprimer une liste de données
+Supprimer_liste
+   # Arguments pour le titre et le contenu de l'article
+    [Arguments]    ${Site_Name}    ${Liste_Name}   
+    # Attendre que l'onglet "Sites" soit visible et ensuite cliquer dessus
+    Wait Until Element Is Visible    ${btn_Onglet_Sites}    ${TIMEOUT}
+    Click Element    ${btn_Onglet_Sites}
+
+    # Attendre que le bouton "My Sites" soit visible et ensuite cliquer dessus
+    Wait Until Element Is Visible    ${btn_MySites}    ${TIMEOUT}
+    Click Element    ${btn_MySites}
+
+    # Attendre que le bouton du site "Groupe1247" soit visible et ensuite cliquer dessus
+    Wait Until Element Is Visible    ${btn_site1}${Site_Name}${btn_site2}    ${TIMEOUT}
+    Click Element    ${btn_site1}${Site_Name}${btn_site2}
+
+    # Attendre que le bouton "Data_List" soit visible et ensuite cliquer dessus pour afficher la liste des donnes
+    Wait Until Element Is Visible    ${btn_DataList}    ${TIMEOUT}
+    Click Element    ${btn_DataList}
+    Run Keyword And Ignore Error    ${btn_DataList} 
+    
+    # Attendre que l'option "More" soit visible et ensuite cliquer dessus
+    Wait Until Element Is Visible    ${btn_More}    ${TIMEOUT}
+    Click Element    ${btn_More}
+    
+    # Attendre que le bouton "Data_List" soit visible et ensuite cliquer dessus pour afficher la liste des donnes
+    Wait Until Element Is Visible    ${btn_DataList}    ${TIMEOUT}
+    Click Element    ${btn_DataList}
+    Run Keyword And Ignore Error    ${btn_DataList} 
+
+      # Attendre que le bouton que voulez vous supprimer soit visible et ensuite cliquer dessus pour afficher la liste des donnes
+    Wait Until Element Is Visible    ${btn_A_supprimer1}${Liste_Name}${btn_A_supprimer2}    ${TIMEOUT}
+    Click Element     ${btn_A_supprimer1}${Liste_Name}${btn_A_supprimer2} 
+   
+
+    # Attendre que le boutton supprimer s'affiche
+   
+
+    Mouse Over    ${btn_A_supprimer1}${Liste_Name}${btn_A_supprimer2}   
+    Wait Until Element Is Visible    ${btn_delete1}${Liste_Name}${btn_delete2}     ${TIMEOUT}
+    Click Element    ${btn_delete1}${Liste_Name}${btn_delete2}   
+    
+    #confirmation
+    Wait Until Element Is Visible    ${btn_confirm_delete}     ${TIMEOUT}
+    Click Element    ${btn_confirm_delete}  
+
+
+########################################################Fichier Script################################################
+
+
+# Paramètres généraux pour le cas de test
+*** Settings ***
+# Documentation pour ce fichier script, spécifiant le module associé
+Documentation    Fichiers de scripts pour le module RQ3 : Sites
+# Inclusion de la bibliothèque Selenium pour l'automatisation du navigateur web
+Library           SeleniumLibrary
+# Inclusion de la bibliothèque Telnet pour la communication sur le réseau (si nécessaire pour ce test)
+Library           Telnet
+# Inclusion d'autres mots-clés à partir d'un fichier externe
+Resource          ../Ressources/Keywords/keywords.robot
+# Chargement des localisateurs (comme les sélecteurs CSS ou XPath) à partir d'un fichier externe
+Variables         ../Ressources/Locators/Locators.py
+
+# Déclaration des variables utilisées dans le cas de test
+*** Variables ***
+# URL de l'application ou du site web à tester
+${vURL}           http://localhost:8088/share/page/
+# Type de navigateur à utiliser (ff signifie Firefox)
+${vBrowser}       chrome
+# Informations d'identification pour se connecter à l'application
+${vUsername}      6213133
+${vPassword}      123456
+#Site name
+${Site_Name}    Groupe1247  
+${Liste_Name}    revue_code
+
+
+# Définition des cas de test
+*** Test Cases ***
+# Cas de test principal
+Test
+    # Se connecter à l'application en utilisant les informations d'identification fournies
+    Login          ${vURL}    ${vBrowser}    ${vUsername}    ${vPassword}
+    Supprimer_liste    ${Site_Name}    ${Liste_Name}
+    # Se déconnecter de l'application après avoir effectué les actions
+    Logout
