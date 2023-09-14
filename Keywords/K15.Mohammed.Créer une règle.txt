@@ -3,10 +3,207 @@
 #NB : Veuillez noter que les localisateurs sont basés sur la version anglaise. Ainsi, si vous rencontrez des problèmes, n'hésitez pas à ajuster les textes.
 
 
+ 
+#SharedFiles Page Elements
+btn_SharedFiles ="link=Shared Files"
+file_Test1 = "link="
+file_Test2 = ""
+#btn_more=
+btn_More1="xpath=//a[text()='"
+btn_More2="']/ancestor::tr/td//a[contains(@alt,'More...')]"
+btn_manage_rules1="xpath=//a[text()='"
+btn_manage_rules2="']/ancestor::tr/td//a[@title='Manage Rules']"
+btn_create_rules="link=Create Rules"
+
+#NewRules page Elements
+
+RuleName="xpath=//input[@name='title']"
+description_content="xpath=//textarea[@type='text' and @name='description']"
+
+
+define_rule_When1="xpath=//option[@value='"
+define_rule_When2="']"
+
+
+#if all criteria are met
+critera_check_box="xpath=//input[@id='template_x002e_rule-edit_x002e_rule-edit_x0023_default-ruleConfigIfCondition-condition-checkbox']"
+liste_choix="xpath=//div[@class='if']//select[@class='config-name']"
+choix1="xpath=//div[@class='if']//select[@class='config-name']//option[@value='no-condition' and text()='"
+choix2="']"
+btn_create="//button[@id='template_x002e_rule-edit_x002e_rule-edit_x0023_default-create-button-button']"
+action="xpath=//div[@class='rule-config action edit']//select"
+action_choice1="xpath=//div[@class='rule-config action edit']//option[text()='"
+action_choice2="']"
+
+
+
+# Login Page Elements
+txt_UserName = "name=username"
+txt_Password = "name=password"
+btn_Login = "xpath=//button[contains(text(), 'Sign In')]"
+
+
+# Dashboard Page Elements
+lbl_Title = "xpath=//h1[@id='HEADER_TITLE']/span"
+link_HeaderUserMenu = "id=HEADER_USER_MENU_POPUP_text"
+link_HeaderDeconnexion = "id=HEADER_USER_MENU_LOGOUT_text"
+
+# Dashbord Config page elements
+img_RoueDentee = "id=HEADER_TITLE_MENU"
+btn_ChangerDisposition = "id=template_x002e_customise-layout_x002e_customise-user-dashboard_x0023_default-change-button-button"
+btn_Mode = "id=template_x002e_customise-layout_x002e_customise-user-dashboard_x0023_default-select-button-dashboard"
+btn_ChangerDisposition_OK = "id=template_x002e_customise-dashlets_x002e_customise-user-dashboard_x0023_default-save-button-button"
 
 
 ######################################################Fichier Keywords ############################################
+# Définition des paramètres nécessaires pour exécuter les cas de test
+*** Settings ***
+# Utilisation de la bibliothèque Selenium pour automatiser les actions dans le navigateur
+Library           SeleniumLibrary
+# Chargement des localisateurs à partir d'un fichier externe
+Variables         ../Locators/Locators.py
+
+# Définition des variables utilisées dans les cas de test
+*** Variables ***
+# Délai maximum pour attendre un élément ou une condition
+${TIMEOUT}        10s
+# Variable pour l'URL du site web à tester
+${vURL}
+
+# Définition des mots-clés ou fonctions personnalisées
+*** Keywords ***
+# Mot-clé pour se connecter à une application ou un site web
+Login
+# vURL contient l'adresse URL de la page web
+    # vBrowser contient l'identifiant du navigateur cible
+    # vUsername contient le login
+    # vPassword contient le mot de passe
+    [Arguments]    ${vURL}    ${vBrowser}    ${vUsername}    ${vPassword}
+    # Definir la valeur de timeout pour le cas de test
+    Set Selenium Timeout    ${TIMEOUT}
+    # Ouvrir le navigateur en precisant l'URL et le navigateur
+    Open Browser    ${vURL}    ${vBrowser}
+    # Maximiser la fenetre du navigateur
+    Maximize Browser Window
+    # Saisie du login
+    Input text    ${txt_UserName}    ${vUsername}
+    # Saisie du mot de passe
+    Input text    ${txt_Password}    ${vPassword}
+    # Click sur le bouton Connexion
+    Click Button    ${btn_Login}        
+    # S'assurer que la page est chargee
+    Wait Until Element Is Visible    ${lblTitle}
+    # S'assurer que l'utilisateur est connecte et que le tableau de bord est affiche
+    Element Should Contain    ${lblTitle}    Dashboard
+
+# Mot-clé pour se déconnecter d'une application ou d'un site web
+Logout
+  #sleep    3s
+    Wait Until Element Is Visible    ${link_HeaderUserMenu}
+    Click Element    ${link_HeaderUserMenu}
+    Wait Until Element Is Visible    ${link_HeaderDeconnexion}
+    Click Element    ${link_HeaderDeconnexion}
+    [Teardown]    Close Browser
+
+Creer_Regle
+    # Accepter les arguments : nom de la règle et description
+    [Arguments]     ${RuleName_text}    ${description_text}    ${Name_file_Test}    ${rule_when}    ${criterea}    ${choix1_action}       
+    
+    # Accéder aux fichiers partagés
+    Wait Until Element Is Visible    ${btn_SharedFiles}    ${TIMEOUT}
+    Click Element    ${btn_SharedFiles}
+
+    Wait Until Element Is Visible    ${file_Test1}${Name_file_Test}${file_Test2}    ${TIMEOUT}
+    Mouse Over    ${file_Test1}${Name_file_Test}${file_Test2}
+
+    # Accéder aux options supplémentaires 
+    # Sélectionner l'option pour gérer les règles
+    Wait Until Element Is Visible    ${btn_More1}${Name_file_Test}${btn_More2}    ${TIMEOUT}
+    Click Element    ${btn_More1}${Name_file_Test}${btn_More2}
+    Click Element    ${btn_manage_rules1}${Name_file_Test}${btn_manage_rules2}
+    Click Element    ${btn_create_rules}
+    # Saisir le nom de la règle
+    Input Text    ${RuleName}     ${RuleName_text}
+    # Saisir la description de la règle
+    Input Text    ${description_content}     ${description_text}
+    # Définir le déclencheur sur la création d'un élément
+    Wait Until Element Is Visible    ${define_rule_When1}${rule_when}${define_rule_When2}    ${TIMEOUT}
+    Click Element    ${define_rule_When1}${rule_when}${define_rule_When2}
+    
+    # Cocher la case correspondant au critère
+    Wait Until Element Is Visible    ${critera_check_box}    ${TIMEOUT}
+    Wait Until Element Is Enabled    ${critera_check_box}    ${TIMEOUT}
+
+    ${status}=    Run Keyword And Return Status    Checkbox Should Not Be Selected    ${critera_check_box} 
+    Run Keyword If    ${status}    Click Element    ${critera_check_box}    
+    Sleep    2s  
+    
+
+    #Cliquer sur la liste de choix 
+    Wait Until Element Is Visible    ${liste_choix}    ${TIMEOUT}
+    Click Element    ${liste_choix}
+
+
+
+    #Choisir les criters de la regle
+    Wait Until Element Is Visible    ${choix1}${criterea}${choix2}    ${TIMEOUT}
+    Click Element    ${choix1}${criterea}${choix2}
+    Sleep    4
+
+
+    #Perform action list
+    #Wait Until Element Is Visible    ${action}    ${TIMEOUT}
+    Click Element    ${action}
+
+     Wait Until Element Is Visible    ${action_choice1}${choix1_action}${action_choice2}    ${TIMEOUT}
+    Click Element    ${action_choice1}${choix1_action}${action_choice2}
+
+
+    # Valider et créer la règle
+  Wait Until Element Is Visible    ${btn_create}    ${TIMEOUT}
+  Click Element    ${btn_create}
+
 
 
 ########################################################Fichier Script################################################
 
+# Créer un article dans un blog (dans un site déjà créé)
+
+# Paramètres généraux pour le cas de test
+*** Settings ***
+# Documentation pour ce fichier script, spécifiant le module associé
+Documentation    Fichiers de scripts pour le module RQ3 : Sites
+# Inclusion de la bibliothèque Selenium pour l'automatisation du navigateur web
+Library           SeleniumLibrary
+# Inclusion de la bibliothèque Telnet pour la communication sur le réseau (si nécessaire pour ce test)
+Library           Telnet
+# Inclusion d'autres mots-clés à partir d'un fichier externe
+Resource          ../Ressources/Keywords/keywords.robot
+# Chargement des localisateurs (comme les sélecteurs CSS ou XPath) à partir d'un fichier externe
+Variables         ../Ressources/Locators/Locators.py
+
+# Déclaration des variables utilisées dans le cas de test
+*** Variables ***
+# URL de l'application ou du site web à tester
+${vURL}           http://localhost:8088/share/page/
+# Type de navigateur à utiliser (ff signifie Firefox)
+${vBrowser}       chrome
+# Informations d'identification pour se connecter à l'application
+${vUsername}      6213133
+${vPassword}      123456
+${Name_file_Test}    2023-08-23-164723    
+${RuleName_text}    Régle Test
+${description_text}    Ceci est une regle pour tester la fonctionnalité
+${rule_when}    inbound                                     # inbound(created or enter this foldes) #update #outbound(deleted or leave)
+${criterea}    All Items         #il faut choisir le critere parmi la liste
+${choix1_action}    Increment Counter     #choisir parmi la liste   
+
+# Définition des cas de test
+*** Test Cases ***
+# Cas de test principal
+Test
+    # Se connecter à l'application en utilisant les informations d'identification fournies
+    Login          ${vURL}    ${vBrowser}    ${vUsername}    ${vPassword}
+    Creer_Regle    ${RuleName_text}    ${description_text}    ${Name_file_Test}    ${rule_when}    ${criterea}    ${choix1_action}  
+    # Se déconnecter de l'application après avoir effectué les actions
+    Logout
