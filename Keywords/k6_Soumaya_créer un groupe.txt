@@ -1,0 +1,79 @@
+Créer un groupe
+---------------------------
+
+#chercher le nom de la groupe créé dans la liste de groupe pour valider la création
+Groupe_localisateur_dansListe1= "//span[contains(text(),'"
+Groupe_localisateur_dansListe2= "')]"
+#contient le bouton (+) pour créer le groupe
+Link_Creer_Groupe = "//span[@title='Nouveau groupe']"
+#contient le bouton parcourir
+btn_Parcourir = "//button[text()='Parcourir']"
+#contient le localisateur pour l'identifiant de groupe 
+champ_identifiant = "//input[@id='page_x002e_ctool_x002e_admin-console_x0023_default-create-shortname']"
+#contient le localisateur pour nom de groupe 
+champ_Nom_Affiché = "//input[@id='page_x002e_ctool_x002e_admin-console_x0023_default-create-displayname']"
+#contient le bouton pour créer un groupe
+btn_CreerUnGroupe = "//button[text()='Créer un groupe']"
+Popup = "//div[@class='bd']"
+
+
+
+
+---------------------------------------------------
+
+*** Settings ***
+Library         SeleniumLibrary
+Library         DateTime
+Library         String
+Library         Telnet
+Variables       ../Locators/locatorsLoginDashbordPage.py
+Variables       ../Locators/locatorsAdminPage.py
+Variables       ../Locators/LocatorsOutilsAdminPage.py
+
+
+*** Variables ***
+${TIMEOUT}      10s
+${vURL}         ${EMPTY}
+
+
+*** Keywords ***
+Creer un groupe et procéder pour la création
+# ${vNom_Groupe} contient le nom du groupe
+# ${v_Identifiant} contient l'identifiant du groupe
+
+    [Arguments]    ${vNom_Groupe}    ${v_Identifiant}
+    # aller vers Outils admin dans la barre de menu
+    #Aller vers la page Outils admin
+	Wait Until Element Is Visible    ${link_headerOutilsAdmin}
+    Click Element    ${link_headerOutilsAdmin}
+    # Cliquer sur groupe dans la barre a gauche de la page Outils admin
+	Wait Until Element Is Visible    ${link_Groupes}
+    Click Element    ${link_Groupes}
+    # attendre puis cliquer sur le bouton parcourir: ${btn_Parcourir}
+    Wait Until Element Is Visible    ${btn_Parcourir}
+    Click Element    ${btn_Parcourir}
+    # attendre et cliquer sur le (+)    qui permet de créer le groupe
+    # Le localisateur ${Link_Creer_Groupe} contient: (+)
+    Wait Until Element Is Visible    ${Link_Creer_Groupe}
+    Click Element    ${Link_Creer_Groupe}
+    # attendre que les champs a remplir pour la création de groupe devient visible
+    # ${champ_identifiant} contient l'identifiant de groupe : ${v_Identifiant}
+    Wait Until Element Is Visible    ${champ_identifiant}
+    Input Text    ${champ_identifiant}    ${v_Identifiant}
+    # ${champ_Nom_Affiché} contient le nom de groupe ${vNom_Groupe}
+    Input Text    ${champ_Nom_Affiché}    ${vNom_Groupe}
+    Click Button    ${btn_CreerUnGroupe}
+    # la validation que le groupe existe dans la liste des groupes
+    #valider que le groupe est bien cree    ${vNom_Groupe}
+    # chercher le groupe localisé par : ${Groupe_localisateur_dansListe1}${vNom_Groupe}${Groupe_localisateur_dansListe2}
+    [Arguments]    ${vNom_Groupe}
+    Page Should Contain Element
+    ...    ${Groupe_localisateur_dansListe1}${vNom_Groupe}${Groupe_localisateur_dansListe2}
+    ...    le groupe n'a pas été créé
+
+
+
+
+   
+
+

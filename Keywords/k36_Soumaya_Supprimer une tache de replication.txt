@@ -1,0 +1,56 @@
+Supprimer une tache de replication
+---------------------------------------------------------------------------
+#localisateur pour la tache de replication a supprimer dans la liste des taches existants
+vTache_Locator01 = "//span[text()='"
+vTache_Locator02 ="']"
+#localisateur de bouton supprimer dans le tableau de la tache de replication
+btn_Supprimer = "//button[text()='Supprimer' or text()='Delete']"
+#localisateur de bouton supprimer dans le popup
+btn_Popup_Supprimer = "//button[@id='yui-gen11-button']"
+
+---------------------------------------------------------------------------
+*** Settings ***
+Library         SeleniumLibrary
+Library         DateTime
+Library         String
+Variables       ../Locators/locatorsLoginDashbordPage.py
+Variables       ../Locators/locatorsAdminPage.py
+Variables       ../Locators/LocatorsOutilsAdminPage.py
+
+
+*** Variables ***
+${TIMEOUT}      5s
+${vURL}         ${EMPTY}
+
+
+*** Keywords ***
+
+Supprimer un tache de replication
+# besoin du nom de tache a supprimer : ceci dit que la tache de replication doit etre existante
+    [Arguments]    ${vTache}
+    # aller a Outils admin dans la barre des outils
+    Click Element    ${link_headerOutilsAdmin}
+    # attendre puis cliquer sur tache de réplication a gauche
+    Wait Until Element Is Visible    ${link_TacheReplication}
+    Click Element    ${link_TacheReplication}
+    # chercher la tache de replication a supprimer dans la liste des taches existants
+    Wait Until Element Is Visible    ${vTache_Locator01}${vTache}${vTache_Locator02}
+    Click Element    ${vTache_Locator01}${vTache}${vTache_Locator02}
+    # attendre que la tache de réplication soit affichée pour pouvoir cliquer sur bouton supprimer
+    Wait Until Element Is Visible    ${btn_Supprimer}
+    Click Button    ${btn_Supprimer}
+    # Sleep    5s # pour afficher lentement l'action
+    # switcher vers le window pour pouvoir valider la suppression
+    ${window_handles}=    Get Window Handles
+    Switch Window    ${window_handles}[0]
+    # attendre que le bouton supprimer du popup soit visible puis cliquer supprimer
+    Wait Until Element Is Visible    ${btn_Popup_Supprimer}
+    Click Button    ${btn_Popup_Supprimer}
+    # revenir au window principale
+    Get Window Handles
+    # attendre pour apploader la page
+    Sleep    2s
+    # Valider que la page ne contient pas la tache de replication supprimée
+    Page Should Not Contain Element
+    ...    ${vTache_Locator01}${vTache}${vTache_Locator02}
+    ...    la tache n'a pas été supprimée

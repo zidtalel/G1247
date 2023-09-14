@@ -1,0 +1,69 @@
+Fichiers de scripts pour Supprimer un Dossier.
+-----------------------------------------------------------------------------------------------------------
+
+#Fichiers partagées page Elements
+# la première partie de localisateur de Plus... qui est devant le dossier a supprimer et de Supprimer le Dossier
+ChampDossierASupprimer1 = "//a[text()='"
+ChampDossierASupprimer02 = "']/ancestor::tr"
+# la dernière partie de localisateur de Plus... qui est devant le dossier a supprimer
+ChampDossierASupprimer2 = "']/ancestor::tr//div[@id='onActionShowMore']"
+#la dernière partie de localisateur de Supprimer le Dossier
+ChampDossierASupprimer3 = "']/ancestor::tr//div[@id='onActionDelete']"
+# Le Localisateur du bouton Supprimer dans le popup Supprimer le Dossier
+btn_Supprimer = "//button[text()='Supprimer']"
+
+-------------------------------------------------------------------------------------------------------
+
+*** Settings ***
+Library         SeleniumLibrary
+Library         Telnet
+Library         RequestsLibrary
+Variables       ../Locators/LocatorsLoginDashbordPage.py
+Variables       ../Locators/LocatorsFichiersPartagesPage.py
+
+
+*** Variables ***
+${TIMEOUT}      5s
+${vURL}         ${EMPTY}
+${BASE_URL}     http://localhost:8088/alfresco/api/-default-/public/alfresco/versions/1
+
+
+*** Keywords ***
+# le keyword principal
+# l'argument v${vNomDossier} contient le nom du dossier a supprimer
+# le keysword principal contient d'autres keywords qui vont être déclarés en dessous
+Supprimer le dossier
+    [Arguments]    ${vNomDossier}
+    Wait Until Element Is Visible    ${link_HeaderFichiersPartages}    # se déplacer vers fichiers partagés
+    Click Element    ${link_HeaderFichiersPartages}
+    Sleep    5s
+    # faire apparaitre les options devant le dossier a supprimer
+    #Placer la souris devant le champs du dossier a supprimer    ${vNomDossier}
+	# repéte une deuxieme fois (souris dans le champs du dossier) après 2 secondes si pas succès
+    Wait Until Keyword Succeeds
+    ...    2
+    ...    2
+    ...    Mouse Over
+    ...    ${ChampDossierASupprimer1}${vNomDossier}${ChampDossierASupprimer02}
+    Wait Until Element Is Visible    ${ChampDossierASupprimer1}${vNomDossier}${ChampDossierASupprimer02}
+    # apres que les options deviennent visibles, le curseur est placé sur Plus ...
+    Mouse Over    ${ChampDossierASupprimer1}${vNomDossier}${ChampDossierASupprimer2}
+    Wait Until Element Is Visible    ${ChampDossierASupprimer1}${vNomDossier}${ChampDossierASupprimer2}
+    #  Cliquer sur Plus... pour dérouler d'autres options
+    #Cliquer sur Plus    ${vNomDossier}
+	# Clique sur Plus ... et attendre le déroulement des autres options
+    Click Element    ${ChampDossierASupprimer1}${vNomDossier}${ChampDossierASupprimer2}
+    Wait Until Element Is Visible    ${ChampDossierASupprimer1}${vNomDossier}${ChampDossierASupprimer2}
+    # Cliquer sur supprimer
+    Click Element    ${ChampDossierASupprimer1}${vNomDossier}${ChampDossierASupprimer3}
+    # attendre puis cliquer pour confirmer la suppression
+    Wait Until Element Is Visible    ${btn_Supprimer}
+    Click Button    ${btn_Supprimer}
+    #  valider que le dossier n'existe plus
+    #Validation de la suppression de dossier    ${vNomDossier}
+	Sleep    5s
+    Page Should Not Contain Element
+    ...    ${ChampDossierASupprimer1}${vNomDossier}${ChampDossierASupprimer02}
+    ...    Le dossier n'a pas été supprimé
+
+
