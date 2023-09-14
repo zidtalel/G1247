@@ -1,0 +1,12 @@
+######################################################Fichier Locators############################################
+
+#NB : Veuillez noter que les localisateurs sont basés sur la version anglaise. Ainsi, si vous rencontrez des problèmes, n'hésitez pas à ajuster les textes.
+
+
+
+
+######################################################Fichier Keywords ############################################
+
+
+########################################################Fichier Script################################################
+
