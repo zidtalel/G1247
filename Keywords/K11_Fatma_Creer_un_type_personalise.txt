@@ -1,0 +1,151 @@
+Locators
+========
+
+# Localisateurs pour la page de connexion
+loginUsernameField = "name=username"
+loginPasswordField = "name=password"
+loginButton = "xpath=//button"
+homePageMenu = "xpath=//span[@class='alf-menu-bar-label-node']/a[@href='/share/page/user/AdminEquipe2/dashboard']"
+# Localisateurs pour Outils Admin et Gestionnaire de modeles
+adminToolsMenu = "xpath=//div[@id='HEADER_ADMIN_CONSOLE']/span/a"
+modelManagerMenu = "xpath=//a[@href='custom-model-manager']"
+modelFromListComplete = "xpath=//span[@class='value' and text()='Modele2_Equipe2']"
+modelFromList_1 = "//span[@class='value' and text()='"
+modelFromList_2 = "']"
+createCustomTypeButton = "//span[@class='dijitReset dijitInline dijitButtonText' and @data-dojo-attach-point='containerNode' and text()='Créer un type personnalisé']"
+nameField = "xpath=//div[@class='dijitReset dijitInputField dijitInputContainer' and span[@class='alf-icon dijitNoIcon']]/input[@name='name']"
+# parentTypeDropdown premier xpath
+parentTypeDropdown = "xpath=//input[@class='dijitReset dijitInputField dijitArrowButtonInner']"
+# parentTypeDropdown deuxieme xpath
+# parentTypeDropdown = "//input[@name='parent']/.."
+parentType_1 = "//td[@class='dijitReset dijitMenuItemLabel' and text()='"
+parentType_2 = "']"
+displayLabelField = "xpath=//div[@class='dijitReset dijitInputField dijitInputContainer']/input[@name='title']"
+descriptionTextArea = "xpath=//div[@class='control']/textarea[@name='description']"
+createButton = "xpath=//span[@id='CMM_CREATE_TYPE_DIALOG_OK_label']"
+# Localisateurs pour la deconnexion
+connectedAccount = "xpath=//span[@id='HEADER_USER_MENU_POPUP_text']"
+logoutButton = "xpath=//td[@id='HEADER_USER_MENU_LOGOUT_text']"
+
+====================================
+
+*** Settings ***
+Documentation       Ce cas de test couvre la fonctionalite de supprimer un site
+...                 Preconditions:
+...                 1- Utiliser le navigateur en Francais
+...                 2- Ouvrir l application Alfresco
+...                 3- Se connecter en tant qu'administrateur
+...                 4- Avoir un modele cree
+...                 ******************************
+...                 Etapes de cas de test:
+...                 1-Sur le menu au haut de la page, cliquer sur "Outils admin"
+...                 2-Dans le menu a gauche, cliquer sur "Gestionnaire de modeles"
+...                 3- Dans la liste, "Modeles", choisir un modele, le modele choisi est: "Modele2_Equipe2"
+...                 4-Cliquer sur le bouton "Creer un type personnalise"
+...                 5-Une fenêtre popup, un formulaire s affiche
+...                 6-Remplir le champ input text "Nom": "Modele_Test_Eq_2"
+...                 7.Dans le drop down menu, choisir le "Type de parent": "Modele1247:type1247"
+...                 8. Remplir le champ input text "Etiquette d'affichage": "Modele2_Equipe2"
+...                 9. Remlir le textarea "Description": "Modele2_Equipe2"
+...                 10. Cliquer sur "Creer"
+...
+...                 ************************
+...                 Postconditions:
+...                 - Se deconnecter
+...                 - Fermer le navigateur
+...                 - Supprimer le type personalisé cree
+
+Library             SeleniumLibrary
+Variables           ../Locators/locators.py
+Variables           ../Locators/variablesArguments.py
+
+
+*** Keywords ***
+Ouvrir le navigateur
+    [Documentation]    Ouvrir le navigateur et dans une langue specifiee
+    [Arguments]    ${url}    ${browser}=chrome    ${language}=fr-FR
+    Open Browser    ${url}    browser=${browser}
+    Maximize Browser Window
+    Set Selenium Implicit Wait    10s
+    Wait Until Page Contains Element    ${loginUsernameField}    timeout=10s
+
+# Login
+
+Se connecter
+    [Documentation]    Se connecter a l application et s assurer que les champs de login sont vides avant d entrer des valeurs
+    [Arguments]    ${username}    ${password}
+    Clear Element Text    ${loginUsernameField}
+    Clear Element Text    ${loginPasswordField}
+    Input Text    ${loginUsernameField}    ${username}
+    Input Text    ${loginPasswordField}    ${password}
+    Click Element    ${loginButton}
+    Wait Until Page Contains    Tableau de bord    10s
+
+Creer un type personnalise
+# Remplir les informations du type personnalise
+# ${adminToolsMenu}= Le menu Outils admin
+# ${modelManagerMenu}= Le menu Gestionnaire de Modeles
+# ${modelFromList_1}= Le modele a choisir de la liste
+# ${selectedModelName}= Le nom du modele
+# ${modelFromList_2}= Le modele a choisir de la liste
+# ${createCustomType_Button}= Le bouton Creer un type personalise
+# ${nameField}= Le champ Nom
+# ${nameModel}= Le nom à taper
+# ${parentType_1}= Le menu Type de parent
+# ${parentTypeSelected}= Le nom du type à choisir de la liste
+# ${parentType_2}= Le menu Type de parent
+# ${displayLabelField}= le champ Etiquette d'affichage
+# ${label}= L etiquette à taper
+# ${descriptionTextArea}= le champ Description
+# ${description}= La description à taper
+    [Arguments]
+    ...    ${selectedModelName}
+    ...    ${nameModel}
+    ...    ${parentTypeSelected}
+    ...    ${label}
+    ...    ${description}
+# Aller a Outils admin
+    Click Element    ${adminToolsMenu}
+# Aller a Gestionnaire de modeles
+    Click Element    ${modelManagerMenu}
+# Choisir un modele de la liste
+    Click Element    ${modelFromList_1}${selectedModelName}${modelFromList_2}
+# Cliquer sur le bouton creer type personalise
+    Click Element    ${createCustomType_Button}
+    Sleep    5
+    # Wait Until Page Contains    ${nameField}    10s
+
+    ## Remplir le champ obligatoire Nom
+    Input Text    ${nameField}    ${nameModel}
+    ##    app bug dans le drop down menu
+    Sleep    10
+    Click Element    ${parentTypeDropdown}
+
+    ## app bug sans le sleep: les donnees dans le menu deroulant ne se chargent pas
+
+    # Wait Until Element Is Visible    ${parentTypeDropdown}    10s
+    # Wait Until Element Contains    ${parentType}    cm:content
+
+    ## Choisir le type de parent
+    Sleep    5
+    Click Element    ${parentType_1}${parentTypeSelected}${parentType_2}
+    # Wait Until Element Is Visible    ${displayLabelField}    10s
+
+    ## Remplir le champ Etiquette d affichage
+    Input Text    ${displayLabelField}    ${label}
+    # Wait Until Element Is Visible    ${descriptionTextArea}    10s
+
+    # Remplir le champ de texte Description
+    Input Text    ${descriptionTextArea}    ${description}
+
+# Valider la creation
+    Click Element    ${createButton}
+
+# Logout
+
+Se deconnecter et fermer
+    Wait Until Element Is Visible    ${connectedAccount}
+    Click Element    ${connectedAccount}
+    Wait Until Element Is Visible    ${logoutButton}
+    Click Element    ${logoutButton}
+    Close Browser
