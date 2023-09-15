@@ -7,7 +7,8 @@ bouton_site2=   "']"
 bouton_discussions=    "xpath://a[@title='Discussions']"
 bouton_nouveauSujet=    "xpath://button[text()='Nouveau sujet']"
 champ_titre=    "xpath://input[@name='title']"
-champ_texte=    "xpath://body[@id='tinymce']//p"
+iframe_texte=   "xpath://div//iframe"
+champ_texte=    "xpath://body[@id='tinymce']"
 champ_tags=     "xpath://div[@class='taglibrary']//input"
 bouton_enregistrer=    "xpath://button[text()='Enregistrer']"
 localisateur_titreNouveauSujet=    "xpath://*[@class='nodeTitle']"
@@ -31,8 +32,10 @@ Creer un sujet dans une discussion (dans un site deja cree)
     Click Element    ${bouton_nouveauSujet}
     Wait Until Element Is Visible   ${champ_titre}
     Input Text    ${champ_titre}    ${nomNouveauSujet}
+    Select Frame    ${iframe_texte}
     Wait Until Element Is Visible   ${champ_texte}
-    Input Text    ${champ_texte}    ${nomNouveauSujet}
+    Input Text    ${champ_texte}    ${texteNouveauSujet}
+    Unselect Frame
     Wait Until Element Is Visible   ${champ_tags}
     Input Text    ${champ_tags}    ${nom_tags}
     Wait Until Element Is Visible   ${bouton_enregistrer}
