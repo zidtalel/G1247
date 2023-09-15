@@ -1,0 +1,53 @@
+  
+  -----------  K23 Supprimer un groupe ------------------
+
+ preconditions:  - Créer un groupe qui s'appelle 'groupe_test'.
+
+
+################# Les Localisateurs #######################
+
+link_headerOutilsAdmin="xpath=//div[@id='HEADER_ADMIN_CONSOLE']/span/a"
+link_Groupes="xpath=//div[@id='alf-filters']//a[@title='Gestion des groupes']"
+link_input_search_groupe="xpath=//div[@id='alf-content']//input[@name='-' and @type='text']"
+btn_Rechercher_groupe="xpath=//div[@id='alf-content']//button[text()='Rechercher']"
+link_supprimerGroupe1="//div[text()='"
+link_supprimerGroupe2="']/ancestor::tr/td//a[@class='delete']"
+Btn_Conf_Supp_Groupe="xpath=//div[@class='bdft']//button[text()='Supprimer']"
+
+################# Fichiers Keywords #######################
+
+
+Supprimer un groupe
+
+    [Arguments]    ${Nom_groupe}
+    
+    Wait Until Element Is Visible    ${link_headerOutilsAdmin}                 
+    Click Element     ${link_headerOutilsAdmin}										# Cliquer sur l'onglet 'Outils admin'
+    Sleep    2
+    Wait Until Element Is Visible     ${link_Groupes}
+    Click Element    ${link_Groupes}												 # Cliquer sur le filtre 'Groupes'                                          
+    Sleep    2
+    Input text    ${link_input_search_groupe}     ${Nom_groupe}                      # Saisir le groupe a supprimer (groupe_test)
+    Click Element    ${btn_Rechercher_groupe}                                        # Cliquer sur le boutton 'Rechercher'
+    Sleep    2
+
+    Wait Until Element Is Visible    ${link_supprimerGroupe1}${Nom_groupe}${link_supprimerGroupe2}  # Cliquer sur l'icon pour supprimer
+    Click Element    ${link_supprimerGroupe1}${Nom_groupe}${link_supprimerGroupe2}
+
+    Wait Until Element Is Visible    ${Btn_Conf_Supp_Groupe}    ${TIMEOUT} 							# Cliquer sur le boutton de confirmation 'Supprimer' 
+    Run Keyword And Ignore Error    Click Element    ${Btn_Conf_Supp_Groupe}
+
+
+################# Fichier Script #######################
+
+*** Variables ***
+
+${Nom_groupe}    groupe_test 
+
+
+*** Test Cases ***
+
+Supprimer un groupe
+    
+    Supprimer un groupe    ${Nom_groupe}  
+   
