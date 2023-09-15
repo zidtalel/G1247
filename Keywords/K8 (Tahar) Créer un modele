@@ -1,0 +1,59 @@
+
+    -----------  K8 Créer un modele ------------------
+
+
+################# Les Localisateurs #######################
+
+link_headerOutilsAdmin="xpath=//div[@id='HEADER_ADMIN_CONSOLE']/span/a"
+link_GestionnaireDeModeles="xpath=//div[@id='page_x002e_tools_x002e_admin-console_x0023_default-body']/ul/li[7]"
+btn_creerUnModele="xpath=//div[@class='alfresco-layout-LeftAndRight__left']//span[contains(text(),'Créer un modèle')]"
+name_space="name=namespace"
+prefixe_modele="xpath=//input[@name='prefix']"
+nom_modele="xpath=//input[@name='name']"
+createur="xpath=//input[@name='author']"
+description="xpath=//div[@class='control-row']//textarea[@name='description']"
+btn_Creer_modele="xpath=//*[@id='CMM_CREATE_MODEL_DIALOG_OK_label']"
+
+
+################# Fichiers Keywords #######################
+
+Creer un modele 
+
+    [Arguments]    ${Vname_space}     ${Vprefixe_modele}    ${Vnom_modele}    ${Vcreateur}    ${Vdescription} 
+  
+    Wait Until Element Is Visible     ${link_headerOutilsAdmin} 
+    Click Element    ${link_headerOutilsAdmin}                      # Cliquer sur l'onglet 'Outils admin'
+    Sleep    2
+    Click Element    ${link_GestionnaireDeModeles}                  # Cliquer sur le filtre 'Gestionnaire de modeles'
+    Sleep    2
+    Click Element    ${btn_creerUnModele}                           # Cliquer sur le boutton 'Créer un modele'
+    Sleep    2
+    Input text       ${name_space}    ${Vname_space}                # Remplir le champs 'Espace de nom'
+    Input text    ${prefixe_modele}    ${Vprefixe_modele}           # Remplir le champs 'Préfixe'
+    input text    ${nom_modele}    ${Vnom_modele}                   # Remplir le champs 'Nom'
+    Input text    ${createur}    ${Vcreateur}                       # Remplir le champs 'Créateur'
+    input text    ${description}    ${Vdescription}                 # Remplir le champs 'Description'
+    Click Element    ${btn_Creer_modele}                            # Cliquer sur le boutton 'Créer'
+    Sleep    2
+    Wait Until Page Contains    ${Vnom_modele} 
+	
+	
+
+################# Fichier Script #######################
+
+*** Variables ***
+
+${Vname_space}    modele15
+${Vprefixe_modele}    p_modele15
+${Vnom_modele}    n_modele15 
+${Vcreateur}    tahar  
+${Vdescription}    ceci est un nouveau modele "modele15"
+
+*** Test Cases ***
+
+Creer un modele
+   
+    Creer un modele  ${Vname_space}     ${Vprefixe_modele}    ${Vnom_modele}    ${Vcreateur}    ${Vdescription}   
+  
+	
+	
