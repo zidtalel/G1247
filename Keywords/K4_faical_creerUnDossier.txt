@@ -1,0 +1,30 @@
+# page fichiers partages 
+link_fichierPartages = "xpath=//a[@title='Fichiers partagés']"
+btn_creer = "xpath=//button[contains(text(),'Créer')]"
+btn_dossier ="xpath=//span[text()='Dossier']"
+loc_nomDossier = "xpath=//input[@name='prop_cm_name']"
+loc_titreDossier = "xpath=//input[@name='prop_cm_title']"
+loc_descriptionDossier = "xpath=//textarea[@name='prop_cm_description']"
+btn_enregistrDossier ="xpath=//button[text()='Enregistrer']"
+
+
+
+
+
+creer un dossier 
+    [Arguments]    ${nom_dossier}    ${titre_dossier}    ${description_dossier}
+    # cliquez sur lien fichiers partages
+    Click Element    ${link_fichierPartages}
+    # cliquez sur le boutton creer
+    Wait Until Element Is Visible    ${btn_creer}
+    Click Element    ${btn_creer}
+    # cliquez sur Dossier qui figure dans la liste deroulante 
+    Click Element    ${btn_dossier}
+    # saisir nom du dossier
+    Input Text    ${loc_nomDossier}    ${nom_dossier}
+    # saisir titre du dossier
+    Input Text    ${loc_titreDossier}    ${titre_dossier}
+    # saisir description du dossier 
+    Input Text    ${loc_descriptionDossier}    ${description_dossier}
+    # cliquez sur le boutton enregistrer
+    Click Button    ${btn_enregistrDossier}
