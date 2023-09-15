@@ -1,0 +1,72 @@
+# Modele Page Elements
+link_outilAdmin = "css=a[title='Outils admin']"
+link_gestionnaireModele = "css=a[title='Gestionnaire de modèles']"
+link_statuModelePart1 = "xpath=//span[text()='"
+link_statuModelePart2 = "']/ancestor::tr/td[3]/span"
+
+link_ActionMenuPart1 = "//span[text()='"
+link_ActionMenuPart2 = "']/ancestor::tr/td[4]//span[text()='Actions']"
+link_ActionOptionPart1 = "//body/div/div/div/div/table/tbody/tr/td[text()='"
+link_ActionOptionPart2 = "']"
+
+opt_Désactiver = "Désactiver"
+
+link_nomModelePart1 = "xpath=//span[text()='"
+link_nomModelePart2 = "']/ancestor::tr/td[1]//span[text()='"
+link_nomModelePart3 = "']"
+
+link_actions_aspectPart1 = "xpath=//span[text()='"
+link_actions_aspectPart2 = "']/ancestor::tr/td//span[text()='Actions']"
+
+btn_supprimerActionsAspects = "xpath=//div[@class='dijitPopup Popup']//td[text()='Supprimer']"
+
+btn_supprimerMessageConfAspect = "xpath=//div[@id='CMM_DELETE_PROPERTYGROUP_DIALOG']//span[text()='Supprimer']"
+
+
+
+
+
+
+supprimer un aspect dans un modele existant
+    [Arguments]    ${vNomModele}    ${nomAspect}    
+    #cliquez sur le lien outil admin
+    Click Link    ${link_outilAdmin}
+    #cliquez sur le lien gestionnaire des modeles 
+    Wait Until Element Is Visible    ${link_gestionnaireModele}
+    Click Link    ${link_gestionnaireModele}
+
+    Wait Until Element Is Visible    ${link_statuModelePart1}${vNomModele}${link_statuModelePart2}
+    # recuperer le texte du statut(Actif ou Inactif) du modele choisi 
+    ${text_statut} =    Get Text    ${link_statuModelePart1}${vNomModele}${link_statuModelePart2}
+    
+
+    IF    "${text_statut}" == "Actif"
+        #Click sur le menu Actions
+        Wait Until Element Is Visible    ${link_ActionMenuPart1}${vNomModele}${link_ActionMenuPart2}    
+        Click Element    ${link_ActionMenuPart1}${vNomModele}${link_ActionMenuPart2}
+        
+        #Click sur l'option desactiver du menu Actions
+        Wait Until Element Is Visible    ${link_ActionOptionPart1}${opt_Désactiver}${link_ActionOptionPart2} 
+        Click Element    ${link_ActionOptionPart1}${opt_Désactiver}${link_ActionOptionPart2} 
+        
+        #Click sur le nom du modele
+        Wait Until Element Is Visible    ${link_nomModelePart1}${vNomModele}${link_nomModelePart2}${vNomModele}${link_nomModelePart3}
+        Click Element    ${link_nomModelePart1}${vNomModele}${link_nomModelePart2}${vNomModele}${link_nomModelePart3}  
+    ELSE
+        #Click sur le nom du modele
+        Wait Until Element Is Visible    ${link_nomModelePart1}${vNomModele}${link_nomModelePart2}${vNomModele}${link_nomModelePart3} 
+        Click Element    ${link_nomModelePart1}${vNomModele}${link_nomModelePart2}${vNomModele}${link_nomModelePart3}     
+    END
+    #Click sur le bouton Actions de l'aspect choisi
+    Sleep    3
+    Wait Until Element Is Visible    ${link_actions_aspectPart1}${nomAspect}${link_actions_aspectPart2}
+    Click Element    ${link_actions_aspectPart1}${nomAspect}${link_actions_aspectPart2}
+    
+    #Click sur le bouton supprimer
+    Wait Until Element Is Visible    ${btn_supprimerActionsAspects}
+    Click Element    ${btn_supprimerActionsAspects}    
+
+    #Click sur le bouton supprimer du message de confirmation
+    Click Element    ${btn_supprimerMessageConfAspect}
+
+

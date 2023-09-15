@@ -1,0 +1,56 @@
+# Modele Page Elements
+link_outilAdmin = "css=a[title='Outils admin']"
+link_gestionnaireModele = "css=a[title='Gestionnaire de modèles']"
+
+link_nomModelePart1 = "xpath=//span[text()='"
+link_nomModelePart2 = "']/ancestor::tr/td[1]//span[text()='"
+link_nomModelePart3 = "']"
+
+link_typePersPart1 = "xpath=//span[text()='"
+link_typePersPart2 = "']"
+
+link_actionsPropriPart1 = "xpath=//span[text()='"
+link_actionsPropriPart2 = "']/ancestor::tr/td//span[text()='Actions']"
+
+
+btn_suppActionType = "xpath=//div[@class='dijitPopup Popup']/div/div//div/table/tbody/tr/td[text()='Supprimer']"
+btn_suppMessageConfType = "xpath=//div[@id='CMM_DELETE_PROPERTY_DIALOG']//span[text()='Supprimer']"
+
+
+
+
+
+
+supprimer une propriété dans un modele et type deja créés
+    [Arguments]    ${vNomModele}    ${nomPropriete}    ${nomType}  
+    Wait Until Element Is Visible    ${link_outilAdmin}
+    #cliquez sur le lien outil admin
+    Click Link    ${link_outilAdmin}
+    #cliquez sur le lien gestionnaire des modeles 
+    Wait Until Element Is Visible    ${link_gestionnaireModele}
+    Click Link    ${link_gestionnaireModele}
+    Sleep    3
+    #Click sur le nom du modele 
+    Wait Until Element Is Visible    ${link_nomModelePart1}${vNomModele}${link_nomModelePart2}${vNomModele}${link_nomModelePart3}
+    Click Element    ${link_nomModelePart1}${vNomModele}${link_nomModelePart2}${vNomModele}${link_nomModelePart3}     
+    Sleep    3
+    #Click sur le nom du type
+    Wait Until Element Is Visible    ${link_typePersPart1}${nomType}${link_typePersPart2}
+    Click Element    ${link_typePersPart1}${nomType}${link_typePersPart2}
+    Sleep    3
+    #Click sur le bouton actions de la propriete 
+    Wait Until Element Is Visible    ${link_actionsPropriPart1}${nomPropriete}${link_actionsPropriPart2}
+    Click Element    ${link_actionsPropriPart1}${nomPropriete}${link_actionsPropriPart2}
+    
+    #Click sur le bouton supprimer de l actions 
+    Wait Until Element Is Visible    ${btn_suppActionType}
+    Click Element    ${btn_suppActionType}    
+    
+    #clique sur le bouton supprimer du mesage de confirmation 
+    Wait Until Element Is Visible    ${btn_suppMessageConfType}
+    Click Element    ${btn_suppMessageConfType}   
+
+
+
+
+
