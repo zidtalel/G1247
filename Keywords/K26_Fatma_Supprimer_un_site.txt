@@ -1,0 +1,116 @@
+Locators
+=========
+
+# Localisateurs pour la page de connexion
+loginUsernameField = "name=username"
+loginPasswordField = "name=password"
+loginButton = "xpath=//button"
+
+# Localisateurs pour la page principale ou le tableau de bord
+menuSites = "xpath=//span[@id='HEADER_SITES_MENU_text']"
+searchSiteOption = "xpath=//a[@class='alfresco-navigation-_HtmlAnchorMixin' and @href='/share/page/site-finder']"
+
+
+# Localisateurs pour la recherche de site
+searchSitesInput = "xpath=//input[@class='search-term']"
+searchButton = "xpath=//button"
+deleteButtonWithoutName_1 = "//a[text()='"
+# bouton divisé
+deleteButtonWithoutName_2 = "']/ancestor::tr/descendant::span[contains(@id,'deleteButton')]"
+deleteButton_2 = "xpath=//span[@class='yui-button yui-push-button alf-primary-button']"
+# bouton avec le nom du site
+deleteButton_1_Complete = "xpath=//a[text()='Site_Test_Fatma_2']/ancestor::tr/descendant::span[contains(@id,'deleteButton')]"
+# bouton oui
+confirmDelete = "xpath=//span[@class='button-group']/span[@class='yui-button yui-push-button']"
+# bouton non
+# Confirm_Delete = "//span[@class='button-group']/span[@class='yui-button yui-push-button default']"
+connectedAccount = "//span[@id='HEADER_USER_MENU_POPUP_text']"
+logoutButton = "//td[@id='HEADER_USER_MENU_LOGOUT_text']"
+
+===============================================================
+
+*** Settings ***
+Documentation       Ce cas de test couvre la fonctionalite de supprimer un site
+...                 Preconditions:
+...                 1- Utiliser le navigateur en Francais
+...                 2- Ouvrir l application Alfresco
+...                 3- Se connecter en tant qu administrateur
+...                 4- Avoir un site cree
+...                 5- Etre un membre de ce site
+...                 Etapes de cas de test:
+...                 1-Sur le menu au haut de la page, cliquer sur "Sites"
+...                 2-Dans le menu deroulant, cliquer sur "Recherche de sites"
+...                 3- Dans la page "Recherche de sites", taper le nom de site a rechercher dans le champ correspondant, au dessous de "Rechercher des sites"
+...                 4-Cliquer sur le bouton "Rechercher"
+...                 5-A cote du nom de site recherche, cliquer sur le bouton "Supprimer"
+...                 Postconditions:
+...                 - supprimer le site de la corbeille aussi
+...                 - Se deconnecter
+...                 - Fermer le navigateur
+
+Library             SeleniumLibrary
+Variables           ../Locators/locators.py
+Variables           ../Locators/variablesArguments.py
+
+
+*** Keywords ***
+Ouvrir le navigateur
+    [Documentation]    Ouvrir le navigateur et dans une langue spécifiee
+    [Arguments]    ${url}    ${browser}=chrome    ${language}=fr-FR
+    Open Browser    ${url}    browser=${browser}
+    Maximize Browser Window
+    Set Selenium Implicit Wait    10s
+    Wait Until Page Contains Element    ${loginUsernameField}    timeout=10s
+
+# Login
+
+Se connecter
+    [Documentation]    Se connecter a l application et S assurer que les champs de login sont vides avant d entrer des valeurs
+    [Arguments]    ${username}    ${password}
+    Clear Element Text    ${loginUsernameField}
+    Clear Element Text    ${loginPasswordField}
+    Input Text    ${loginUsernameField}    ${username}
+    Input Text    ${loginPasswordField}    ${password}
+    Click Element    ${loginButton}
+    Wait Until Page Contains Element    ${menuSites}    timeout=10s
+
+Supprimer un site
+    [Documentation]    Rechercher un site specifique par son nom
+    # ${siteName}= nom de site à supprimer
+    # ${menuSites}= Menu Sites
+    # ${searchSiteOption}= Rechercher un site dans le menu Sites
+    # ${searchSitesInput}= Taper le nom de site à supprimer
+    # ${deleteButtonWithoutName_1}= Le premier bouton Supprimer
+    # ${deleteButtonWithoutName_2}= Le premier bouton Supprimer
+    # ${deleteButton_2}= le deuxième botuon Supprimer
+    # ${confirmDelete}= Bouton Oui
+    [Arguments]    ${siteName}
+    # cliquer sur le menu Sites
+    Click Element    ${menuSites}
+    Wait Until Element Is Visible    ${menuSites}    timeout=10s
+    # Cliquer sur l option 'Recherche de sites'
+    Click Element    ${searchSiteOption}
+    # Taper le nom de site a rechercher
+    Input Text    ${searchSitesInput}    ${siteName}
+    # Clisuer sur le bouton de recherche
+    Click Element    ${searchButton}
+    Wait Until Page Contains    ${siteName}    timeout=10s
+    # cliquer sur le premier bouton supprimer
+    Click Element    ${deleteButtonWithoutName_1}${siteName}${deleteButtonWithoutName_2}
+    # Click Element    ${Delete_Button_1_complete}
+    Wait Until Element Is Visible    ${deleteButton_2}    timeout=10s
+    # cliquer sur le deuxieme bouton supprimer
+    Click Element    ${deleteButton_2}
+    # Attendre que le bouton soit visible et cliquer dessus
+    # Wait Until Element Is Visible    ${confirmDelete}    timeout=20s
+    Sleep    5
+    # Cliquer sur Oui
+    Click Element    ${confirmDelete}
+
+
+# Logout
+
+Se deconnecter et fermer
+    Click Element    ${connectedAccount}
+    Click Element    ${logoutButton}
+    Close Browser
