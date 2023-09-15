@@ -1,0 +1,91 @@
+Locators:
+========
+
+# Localisateurs pour la page de connexion
+loginUsernameField = "name=username"
+loginPasswordField = "name=password"
+loginButton = "xpath=//button"
+
+# Localisateurs pour la page principale ou le tableau de bord
+menuSites = "xpath=//span[@id='HEADER_SITES_MENU_text']"
+searchSiteOption = "xpath=//a[@class='alfresco-navigation-_HtmlAnchorMixin' and @href='/share/page/site-finder']"
+
+
+# Localisateurs pour la recherche de site
+searchSitesInput = "xpath=//input[@class='search-term']"
+searchButton = "xpath=//button"
+connectedAccount = "//span[@id='HEADER_USER_MENU_POPUP_text']"
+logoutButton = "//td[@id='HEADER_USER_MENU_LOGOUT_text']"
+
+
+================================================
+
+*** Settings ***
+Documentation       Ce cas de test couvre la fonctionalite de rechercher un site
+...                 Preconditions:
+...                 1- Utiliser le navigateur en Francais
+...                 2- Ouvrir l application Alfresco
+...                 3- Se connecter en tant qu utilisateur
+...                 4- Avoir un site cree
+...                 *************************
+...                 Etapes de cas de test:
+...                 1-Sur le menu au haut de la page, cliquer sur "Sites"
+...                 2-Dans le menu deroulant, cliquer sur "Recherche de sites"
+...                 3- Dans la page "Recherche de sites", taper le nom de site a rechercher dans le champ correspondant, au dessous de "Rechercher des sites"
+...                 4-Cliquer sur le bouton "Rechercher"
+...                 *****************************************
+...                 Postconditions:
+...                 - Se deconnecter
+...                 - Fermer le navigateur
+
+Library             SeleniumLibrary
+Variables           ../Locators/locators.py
+Variables           ../Locators/variablesArguments.py
+
+
+*** Keywords ***
+Ouvrir le navigateur
+    [Documentation]    Ouvrir le navigateur et dans une langue specifiee
+    [Arguments]    ${url}    ${browser}=chrome    ${language}=fr-FR
+    Open Browser    ${url}    browser=${browser}
+    Maximize Browser Window
+    Set Selenium Implicit Wait    10s
+    Wait Until Page Contains Element    ${loginUsernameField}    timeout=10s
+
+# Login
+
+Se connecter
+    [Documentation]    Se connecter a l application et S assurer que les champs de login sont vides avant d entrer des valeurs
+    [Arguments]    ${username}    ${password}
+    Clear Element Text    ${loginUsernameField}
+    Clear Element Text    ${loginPasswordField}
+    Input Text    ${loginUsernameField}    ${username}
+    Input Text    ${loginPasswordField}    ${password}
+    Click Element    ${loginButton}
+    Wait Until Page Contains Element    ${menuSites}    timeout=10s
+
+Rechercher un site
+    [Documentation]    Rechercher un site spécifique par son nom
+    # ${siteName} =    nom du site à chercher
+    # ${menuSites} = Menu Sites
+    # ${searchSiteOption} = Rechercher un site dans le menu Sites
+    # ${searchSitesInput} = Taper le nom de site à chercher
+    # ${searchButton} = Bouton Rechercher
+    [Arguments]    ${siteName}
+    # Cliquer sur le menu Sites
+    Click Element    ${menuSites}
+    Wait Until Page Contains Element    ${menuSites}    timeout=10s
+    # Cliquer sur l option 'Recherche de sites'
+    Click Element    ${searchSiteOption}
+    # Taper le nom de site a chercher
+    Input Text    ${searchSitesInput}    ${siteName}
+    # Cliquer sur le bouton rechercher
+    Click Element    ${searchButton}
+    Wait Until Page Contains    ${siteName}    timeout=10s
+
+# Logout
+
+Se deconnecter et fermer
+    Click Element    ${connectedAccount}
+    Click Element    ${logoutButton}
+    Close Browser
