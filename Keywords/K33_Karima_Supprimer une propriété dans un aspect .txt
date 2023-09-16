@@ -1,0 +1,38 @@
+K33 Karima :Supprimer une propriété dans un aspect  (dans un modèle et un type déjà créés)
+#---Les localisateurs
+Link_admin ="xpath=//a[text()='Outils admin']"
+Link_GestionModel ="xpath=//a[text()='Gestionnaire de modèles']"
+Link_Model1 ="xpath=(//span[text()='"
+Link_Model2="'])"
+Link_Action1="xpath=//span[text()='"
+Link_Action2="']/ancestor::td/following-sibling::td//span[text()='Actions']"
+link_ConcepteurDisp= "xpath=//div[@class='dijitPopup Popup']//descendant::tr//descendant::td[text()='Concepteur de disposition']"
+Icone_Action = "xpath=//span[text()='abc']/parent::div/div"
+Icone_Sup ="xpath=//span[text()='abc']/parent::div/div/span/img[@src='/share/res/js/aikau/1.0.113/alfresco/dnd/css/images/trashcan-16.png']"
+
+
+Supprimer une propriété dans un aspect 
+	# Nom_Model contient le nom du model
+    # Nom-propriete  contient le nom de propriété
+    # Nom_aspect contient le nom d'aspect
+    [Arguments]        ${Nom_Model}    ${Nom-propriete}    ${Nom_aspect}
+#Cliquer sur Outils d administration
+    Click Element    ${Link_admin}
+#Cliquer sur Gestionnaire de modeles
+    Click Element    ${Link_GestionModel}
+#Cliquer sur le modele cible   
+    Wait Until Element Is Visible    ${Link_Model1}${Nom_Model}${Link_Model2} 
+    Click Element    ${Link_Model1}${Nom_Model}${Link_Model2}      
+#Cliquer sur button Action  
+     Wait Until Element Is Visible       ${Link_Action1}${Nom_aspect}${Link_Action2}
+     Sleep    2s
+    Click Element    ${Link_Action1}${Nom_aspect}${Link_Action2}
+#Cliquer sur button Concepteur de mise en page
+     Wait Until Element Is Visible    ${link_ConcepteurDisp}
+    Click Element    ${link_ConcepteurDisp}  
+    Wait Until Element Is Visible    ${Icone_Action}
+   Mouse Over    ${Icone_Action}
+# Cliquer sur button supprimer  
+     Wait Until Element Is Visible      ${Icone_Sup}
+    Click Element    ${Icone_Sup}
+    
