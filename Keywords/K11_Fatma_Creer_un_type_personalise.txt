@@ -23,6 +23,8 @@ parentType_2 = "']"
 displayLabelField = "xpath=//div[@class='dijitReset dijitInputField dijitInputContainer']/input[@name='title']"
 descriptionTextArea = "xpath=//div[@class='control']/textarea[@name='description']"
 createButton = "xpath=//span[@id='CMM_CREATE_TYPE_DIALOG_OK_label']"
+
+
 # Localisateurs pour la deconnexion
 connectedAccount = "xpath=//span[@id='HEADER_USER_MENU_POPUP_text']"
 logoutButton = "xpath=//td[@id='HEADER_USER_MENU_LOGOUT_text']"
