@@ -14,6 +14,8 @@ searchSiteOption = "xpath=//a[@class='alfresco-navigation-_HtmlAnchorMixin' and 
 # Localisateurs pour la recherche de site
 searchSitesInput = "xpath=//input[@class='search-term']"
 searchButton = "xpath=//button"
+
+#Localisateurs pour logout
 connectedAccount = "//span[@id='HEADER_USER_MENU_POPUP_text']"
 logoutButton = "//td[@id='HEADER_USER_MENU_LOGOUT_text']"
 
