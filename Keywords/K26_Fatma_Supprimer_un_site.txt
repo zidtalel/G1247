@@ -24,6 +24,8 @@ deleteButton_1_Complete = "xpath=//a[text()='Site_Test_Fatma_2']/ancestor::tr/de
 confirmDelete = "xpath=//span[@class='button-group']/span[@class='yui-button yui-push-button']"
 # bouton non
 # Confirm_Delete = "//span[@class='button-group']/span[@class='yui-button yui-push-button default']"
+
+#Localisateurs pour logout
 connectedAccount = "//span[@id='HEADER_USER_MENU_POPUP_text']"
 logoutButton = "//td[@id='HEADER_USER_MENU_LOGOUT_text']"
 
