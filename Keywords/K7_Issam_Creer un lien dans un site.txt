@@ -1,0 +1,177 @@
+****************** Locators/Locators_K7_K27*****************************************
+
+#Login Page Elements
+txt_UserName="name=username"
+txt_Password="name=password"
+btn_Login="xpath=//button[contains(text(), 'Connexion')]"
+
+link_HeaderSites="id:HEADER_SITES_MENU_text"
+
+txt_UserName="name=username"
+txt_Password="name=password"
+btn_Login="xpath=//button[contains(text(), 'Connexion')]"
+
+# Site Page Elements
+img_SiteConfiguration = "//div[@id='HEADER_SITE_CONFIGURATION_DROPDOWN']/span[@class='alfresco-menus-AlfMenuBarPopup__arrow']"
+link_DeleteSite = "id=HEADER_DELETE_SITE_text"
+btn_ConfirmDeletesite = "id=ALF_SITE_SERVICE_DIALOG_CONFIRMATION_label"
+link_ModifierDetailSite = "//td[text()='Modifier les détails du site']"
+
+link_site_module1 = "//div[@id='"
+link_site_module2 = "']/span/a"
+btn_config_site = "//div[@id='HEADER_SITE_CONFIGURATION_DROPDOWN']"
+link_config_site1 = "//td[@id='"
+link_config_site2 = "']"
+lbl_Title = "xpath=//h1[@id='HEADER_TITLE']/span"
+# Module liens (Issam)
+SiteAffiche1= "//a[text()='"
+SiteAffiche2="']"
+btn_Nouveau_lien = "//button[@type='button'and text()='Nouveau lien']"
+txt_titre= "Name=title"
+txt_lien_url="Name=url"
+txt_description="Name=description"
+txt_interne ="//input[@name='internal']"
+txt_tags= "//input[@name='-' ]"
+btn_ajouter = "//button[@type='button'and text()='Ajouter']"
+btn_enregistrer = "//button[@type='button'and text()='Enregistrer']"
+
+# Module Discussions (issam)
+SiteAffiche1= "//a[text()='"
+SiteAffiche2="']"
+Link_Site_Titre= "//*[@id='HEADER_TITLE']/span/a"
+Txt_TitreSujet1="//a[text()='"
+Txt_SuiteTitreSujet="']"
+btn_Supprimer1= "//span/a[text()='"
+btn_Supprimer2= "']/ancestor::tr/td/div/div/div/div[@class='onDeleteTopic']/a"
+btn_Supprimer_Confirm="//button[text()='Supprimer']"
+link_Sujets="//h2[text()='Sujets']"
+link_tout="//a[text()='Tout']"
+link_Verification="//div[text()='Pas de sujet trouvé']"
+
+#link_HeaderUserMenu = "id=HEADER_USER_MENU_POPUP"
+link_HeaderUserMenu ="//span[@id='HEADER_USER_MENU_POPUP_text']"
+link_HeaderTableauDeBordUtilisateur = "id=HEADER_USER_MENU_DASHBOARD"
+link_HeaderMonProfil = "id=HEADER_USER_MENU_PROFILE"
+link_HeaderAide = "id=HEADER_USER_MENU_HELP"
+link_HeaderUtiliserLaPageActuelle = "id=HEADER_USER_MENU_SET_CURRENT_PAGE_AS_HOME"
+link_HeaderUtiliserMonTableauDeBord = "id=HEADER_USER_MENU_SET_DASHBOARD_AS_HOME"
+link_HeaderChangerLeMotDePasse = "id=HEADER_USER_MENU_CHANGE_PASSWORD"
+#link_HeaderDeconnexion = "id=HEADER_USER_MENU_LOGOUT"
+#link_HeaderDeconnexion = "//td[@id='HEADER_USER_MENU_LOGOUT_text']"
+link_HeaderDeconnexion="//div[@id='HEADER_USER_MENU_POPUP']"   
+
+
+
+
+************************************************************************************************************
+*******************Keyword_K7_issam***********************************************************************
+
+*** Settings ***
+Library           Selenium2Library
+Library           DateTime
+Library           String
+Variables         ../Locators/Locators_K7_K27.py
+Documentation    Ce keyword (K7 Crée un lien dans un sits déjà créé) est écrit dans le cadre du projet de synthése 
+...                Notez que j'ai utilisé les keywords fournis par M.Talel
+
+*** Variables ***
+${TIMEOUT}        5s
+${vURL}
+
+
+*** Keywords ***
+Login
+    # vURL contient l'adresse URL de la page web
+    # vBrowser contient l'identifiant du navigateur cible
+    # vUsername contient le login
+    # vPassword contient le mot de passe
+    [Arguments]    ${vURL}    ${vBrowser}    ${vUsername}    ${vPassword}
+    # Definir la valeur de timeout pour le cas de test
+    Set Selenium Timeout    ${TIMEOUT}
+    # Ouvrir le navigateur en precisant l'URL et le navigateur
+    Open Browser    ${vURL}    ${vBrowser}
+    # Maximiser la fenetre du navigateur
+    Maximize Browser Window
+    # Saisie du login
+    Input text    ${txt_UserName}    ${vUsername}
+    # Saisie du mot de passe
+    Input text    ${txt_Password}    ${vPassword}
+    # Click sur le bouton Connexion
+    Click Button    ${btn_Login}
+    # S'assurer que la page est chargee
+    Wait Until Element Is Visible    ${lblTitle}
+    # S'assurer que l'utilisateur est connecte et que le tableau de bord est affiche
+    Element Should Contain    ${lblTitle}    Tableau de bord de
+
+Logout
+    Wait Until Element Is Visible    ${link_HeaderUserMenu}
+    Click Element    ${link_HeaderUserMenu}
+    Wait Until Page Contains Element    ${link_HeaderDeconnexion}
+    Sleep    5
+    #Select From List By Label   //td[contains(text(),'Déconnexion')]
+    Click Element    ${link_HeaderDeconnexion}
+    #[Teardown]    Close Browser
+
+Afficher site
+    [Arguments]    ${vURL}    ${vNomSite}
+    Go To    ${vURL}/site/${vNomSite}/dashboard
+
+Afficher module site
+    [Arguments]    ${vNomSite}    ${vNomModule}
+    # ${vNomSite} Ce parametre contient le nom du site
+    # ${vNomModule} Ce parametre contient le nom du module du site. Les valeurs sont :
+    # Tableau de bord : HEADER_SITE_DASHBOARD
+    # Espace documentaire : HEADER_SITE_DOCUMENTLIBRARY
+    # Discussion : HEADER_SITE_DISCUSSIONS-TOPICLIST
+    # Calendrier : HEADER_SITE_CALENDAR
+    # Liens : HEADER_SITE_LINKS
+    # Liste de donnees : HEADER_SITE_DATA-LISTS
+    # Blog : HEADER_SITE_BLOG-POSTLIST
+    # Wiki : HEADER_SITE_WIKI-PAGE
+    # Membres du site : HEADER_SITE_MEMBERS
+    Go To    ${vURL}/site/${vNomSite}/dashboard
+    ${status}    ${vValue}=    Run Keyword And Ignore Error
+    ...    Click Element    ${link_site_module1}${vNomModule}${link_site_module2}
+    Run Keyword If    '${status}'=='FAIL'
+    ...    Run Keywords
+    ...    Click Element    //div[@id='HEADER_SITE_MORE_PAGES']/span/span
+    ...    AND    Click Element    ${link_site_module1}${vNomModule}${link_site_module2}
+    ...    
+
+Init Date
+    ${vDateSys}=    Get Current Date    exclude_millis=yes
+    ${vDate}=    Get Substring    ${vDateSys}    0    10
+    ${vHeure}=    Get Substring    ${vDateSys}    11    13
+    ${vMinute}=    Get Substring    ${vDateSys}    14    16
+    ${vSeconde}=    Get Substring    ${vDateSys}    17    19
+    ${vCompleteDate}=    catenate    ${vDate}-${vHeure}${vMinute}${vSeconde}
+    [Return]    ${vCompleteDate}
+Créer un lien (dans un site déjà créé)
+    [Documentation]    
+    ...    ce keyword permet de créer un lien dans un site  
+    ...    Le site doit être déjà créé et le module Liens est ajouté.  
+    
+    #titre : contient le titre du lien à créer
+    #lien_url : contient l' url du lien
+    #vNomSite : contient le nom du site
+    #Description : contient la discription du lien
+    #Interne: doit être cocher (Les liens marqués ''Interne'' seront ouverts dans la même fenêtre)
+    #tags : contient le tag à ajouter au lien 
+    [Arguments]    ${TIMEOUT}     ${btn_Nouveau_lien}    ${vNomSite}    ${titre}    ${lien_url}    ${Description}    ${txt_Interne}    ${tags}    ${vNomModule}    ${vCompleteDate}
+   
+    Click Button    ${btn_Nouveau_lien}     
+    #Saisir le titre de lien    
+    Input Text    ${txt_titre}    ${titre}${vCompleteDate}    
+    #Saisir le url de lien    
+    Input Text    ${txt_lien_url}    ${lien_url}
+    #Saisir la discription du lien
+    Input Text    ${txt_description}    ${Description}  
+    #Selectionner la case interne 
+    Select Checkbox    //input[@name="internal"] 
+    #ajouter un Tag   
+    Input text    ${txt_tags}    ${tags}    
+    Click Button    ${btn_ajouter} 
+
+    #Cliquer sur le button Enregistrer     
+    Click Button    ${btn_enregistrer}  
+
