@@ -1,0 +1,18 @@
+-------------Locators--------------------
+MON_PROFIL = "//a[@title='Mon profil']"
+TRASH_LINK = "//a[@id='template_x002e_toolbar_x002e_user-profile_x0023_default-user-trashcan-link']"
+BUTTONSuppr1 = "xpath=//div[text()='"
+BUTTONSuppr2 = "']/ancestor::tr//button[text()='Delete']"
+BUTTONOk = "//button[text()='Ok']"
+--------------Keyword-----------------------
+#Naviguer vers trash
+Trash    
+    [Arguments]    ${vurl}    ${vBrowser}
+    Go To    ${vurl}/user/6214827/user-trashcan
+
+Supprimer Site    
+    [Arguments]    ${vSite}
+    #Saisir le nom de site
+    Click Button    ${BUTTONSuppr1}${vSite}${BUTTONSuppr2}
+    #suprimer definitement le site 
+    Click Button    ${BUTTONOk}
