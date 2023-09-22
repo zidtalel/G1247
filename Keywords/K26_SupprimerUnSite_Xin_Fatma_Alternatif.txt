@@ -1,0 +1,25 @@
+***** Locators *****
+
+Onglet_Sites="//span[@id='HEADER_SITES_MENU_text']"
+option_MesSites = "xpath=//*[@id='HEADER_SITES_MENU_MY_SITES_text']"
+select_site_part1 = "xpath=//*[@class='theme-color-1' and text()='"
+select_site_part2 = "']"
+icon_modifier = "xpath=//img[@title='Options de configuration de site']"
+lien_Supprimer_le_site = "xpath=//*[@id='HEADER_DELETE_SITE_text']"
+btn_confirm_supprimier = "xpath=//*[@id='ALF_SITE_SERVICE_DIALOG_CONFIRMATION_label']"
+
+
+***** Keyword ********
+
+Supprimer un site
+    [Arguments]    ${vNomDeSite}
+    Sleep    3s
+    # cliquer sur le menu Sites
+    Click Element    ${Onglet_Sites}
+    Wait Until Element Is Visible    ${option_MesSites}    # Attendre option 'Mes Sites' visible
+    Click Element    ${option_MesSites}    # Cliquer option 'Mes Sites'
+    Wait Until Element Is Visible    ${select_site_part1}${vNomDeSite}${select_site_part2}    # Attendre nom site visible
+    Click Element    ${select_site_part1}${vNomDeSite}${select_site_part2}    # Cliquer site désiré
+    Click Element    ${icon_modifier}
+    Click Element    ${lien_Supprimer_le_site}
+    Click Element    ${btn_confirm_supprimier}
