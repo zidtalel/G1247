@@ -1,4 +1,4 @@
-#################### VARIABLES DU KEYWORD "Supprimer un modèle" ####################
+#################### Localisateurs DU KEYWORD "Supprimer un modèle" ####################
 bouton_outilsAdmin=    "css:a[title='Outils admin']"
 bouton_gestionnaireDeModeles=    "css:a[title='Gestionnaire de modèles']"
 linkActions1="//span[text()='"
