@@ -1,4 +1,4 @@
-#################### VARIABLES DU KEYWORD "Creer un sujet dans une discussion ####################
+#################### Localisateurs DU KEYWORD "Creer un sujet dans une discussion ####################
 ####################                      (dans un site deja cree)"           ####################
 bouton_sites=    "id:HEADER_SITES_MENU_text"
 bouton_mesSites=    "id:HEADER_SITES_MENU_MY_SITES_text"
