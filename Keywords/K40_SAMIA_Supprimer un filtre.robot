@@ -1,4 +1,4 @@
-#################### VARIABLES DU KEYWORD "Supprimer un filtre" ####################
+#################### LOCALISATEURS DU KEYWORD "Supprimer un filtre" ####################
 bouton_gestionnaireDeRecherche=    "xpath://a[@title='Gestionnaire de recherche']"
 bouton_ici=    "xpath://a[@title='Search Manager']"
 bouton_supprimerFiltre1=    "xpath://img[@title=\"Cliquez pour supprimer ''"
