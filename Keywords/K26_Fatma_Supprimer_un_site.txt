@@ -50,31 +50,8 @@ Documentation       Ce cas de test couvre la fonctionalite de supprimer un site
 ...                 - Se deconnecter
 ...                 - Fermer le navigateur
 
-Library             SeleniumLibrary
-Variables           ../Locators/locators.py
-Variables           ../Locators/variablesArguments.py
-
 
 *** Keywords ***
-Ouvrir le navigateur
-    [Documentation]    Ouvrir le navigateur et dans une langue spécifiee
-    [Arguments]    ${url}    ${browser}=chrome    ${language}=fr-FR
-    Open Browser    ${url}    browser=${browser}
-    Maximize Browser Window
-    Set Selenium Implicit Wait    10s
-    Wait Until Page Contains Element    ${loginUsernameField}    timeout=10s
-
-# Login
-
-Se connecter
-    [Documentation]    Se connecter a l application et S assurer que les champs de login sont vides avant d entrer des valeurs
-    [Arguments]    ${username}    ${password}
-    Clear Element Text    ${loginUsernameField}
-    Clear Element Text    ${loginPasswordField}
-    Input Text    ${loginUsernameField}    ${username}
-    Input Text    ${loginPasswordField}    ${password}
-    Click Element    ${loginButton}
-    Wait Until Page Contains Element    ${menuSites}    timeout=10s
 
 Supprimer un site
     [Documentation]    Rechercher un site specifique par son nom
@@ -110,9 +87,3 @@ Supprimer un site
     Click Element    ${confirmDelete}
 
 
-# Logout
-
-Se deconnecter et fermer
-    Click Element    ${connectedAccount}
-    Click Element    ${logoutButton}
-    Close Browser
