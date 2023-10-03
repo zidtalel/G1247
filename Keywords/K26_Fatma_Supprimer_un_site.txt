@@ -77,12 +77,11 @@ Supprimer un site
     # cliquer sur le premier bouton supprimer
     Click Element    ${deleteButtonWithoutName_1}${siteName}${deleteButtonWithoutName_2}
     # Click Element    ${Delete_Button_1_complete}
-    Wait Until Element Is Visible    ${deleteButton_2}    timeout=10s
+     Wait Until Element Is Enabled    ${deleteButton_2}
     # cliquer sur le deuxieme bouton supprimer
     Click Element    ${deleteButton_2}
     # Attendre que le bouton soit visible et cliquer dessus
-    # Wait Until Element Is Visible    ${confirmDelete}    timeout=20s
-    Sleep    5
+    Wait Until Element Is Enabled    ${confirmDelete}
     # Cliquer sur Oui
     Click Element    ${confirmDelete}
 
